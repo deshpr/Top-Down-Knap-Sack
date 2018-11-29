@@ -1,5 +1,5 @@
 
-def backtrackAlgorithm(memoizedResults, itemCount, capacity, allValues, allWeights, picked_items):
+def backtrack_algorithm(memoized_results, item_count, capacity, all_values, all_weights, picked_items):
     """Performs backtracking to return the actual list of items that were picked by the knapsack problem.
 
         Args:
@@ -15,33 +15,33 @@ def backtrackAlgorithm(memoizedResults, itemCount, capacity, allValues, allWeigh
             list: The set of indices representing the items that were picked and form the optimal subset.
     """
 
-    if itemCount == 0:
+    if item_count == 0:
         return picked_items
 
-    if allWeights[itemCount - 1] > capacity:
-        costAfterItemIsPicked = 0
+    if all_weights[item_count - 1] > capacity:
+        cost_after_item_is_picked = 0
     else:
         # If the item was picked.
-        costNow = memoizedResults[itemCount][capacity]    
-        capacityBeforeIfItemWasPicked = capacity - allWeights[itemCount - 1] # this item's weight, with -1 for indexing.
-        costBeforeIfItemWasPicked = memoizedResults[itemCount - 1][capacityBeforeIfItemWasPicked]
-        costAfterItemIsPicked = costBeforeIfItemWasPicked + allValues[itemCount - 1]
+        costNow = memoized_results[item_count][capacity]    
+        capacity_before_if_item_was_picked = capacity - all_weights[item_count - 1] # this item's weight, with -1 for indexing.
+        cost_before_if_item_was_picked = memoized_results[item_count - 1][capacity_before_if_item_was_picked]
+        cost_after_item_is_picked = cost_before_if_item_was_picked + all_values[item_count - 1]
 
     # If Item was not picked
-    costBeforeIfItemWasNotPicked = memoizedResults[itemCount - 1][capacity]
+    cost_before_if_item_was_not_picked = memoized_results[item_count - 1][capacity]
     
-    if(costAfterItemIsPicked > costBeforeIfItemWasNotPicked):
+    if(cost_after_item_is_picked > cost_before_if_item_was_not_picked):
         # this item was picked.
-        picked_items.append(itemCount) # this in a way is also an index here.
-        picked_items = backtrackAlgorithm(memoizedResults, itemCount - 1, capacityBeforeIfItemWasPicked, allValues, allWeights, picked_items)
+        picked_items.append(item_count) # this in a way is also an index here.
+        picked_items = backtrack_algorithm(memoized_results, item_count - 1, capacity_before_if_item_was_picked, all_values, all_weights, picked_items)
     else:
         # nothing was picked.        
-        picked_items = backtrackAlgorithm(memoizedResults, itemCount - 1, capacity, allValues, allWeights, picked_items)    
+        picked_items = backtrack_algorithm(memoized_results, item_count - 1, capacity, all_values, all_weights, picked_items)    
     return picked_items
 
 
 
-def knapsack_top_down_dp(allValues, allWeights, W):
+def knapsack_top_down_dp(all_values, all_weights, W):
     """Implements knapsack problem using the top down dynamic programming approach, calculating both the optimal cost as well as the indices of the items
         that form the optimal subset.
 
@@ -54,25 +54,25 @@ def knapsack_top_down_dp(allValues, allWeights, W):
             int: The optimal value (cost) that we can have given the input knapsack of capacity W, and the input weights and their individual values.
             list: A list of indices, representing the optimal set of items that represent the optimal subset. 
     """
-    totalItemCount = len(allValues)
+    total_item_count = len(all_values)
 
     # Total rows = # of items
     # Total columns = # possible weight.
 
-    print("Matrix dimensions:{} X {}".format(len(allWeights) + 1, W + 1))
-    memoizedResults = get_memoizing_matrix(len(allWeights) + 1, W + 1)
-    optimal_cost = knapsack(allValues, allWeights, memoizedResults, len(allWeights), W)
+    print("Matrix dimensions:{} X {}".format(len(all_weights) + 1, W + 1))
+    memoized_results = get_memoizing_matrix(len(all_weights) + 1, W + 1)
+    optimal_cost = knapsack(all_values, all_weights, memoized_results, len(all_weights), W)
     print("Optimal cost = {}".format(optimal_cost))
     print("Final matrix")
-    print_matrix(memoizedResults)
+    print_matrix(memoized_results)
     picked_items = []
-    picked_items = backtrackAlgorithm(memoizedResults, totalItemCount, W, allValues, allWeights, picked_items)
+    picked_items = backtrack_algorithm(memoized_results, total_item_count, W, all_values, all_weights, picked_items)
     picked_items = list(reversed(picked_items))
     picked_items = [el - 1 for el in picked_items]
     return optimal_cost, picked_items
 
 
-def knapsack(allValues, allWeights, memoizedResults, n, C):
+def knapsack(all_values, all_weights, memoized_results, n, C):
     """Implement the knapsack algorith, using the top-down dynamic programming approach. 
 
         Args:
@@ -93,31 +93,31 @@ def knapsack(allValues, allWeights, memoizedResults, n, C):
     if n<0 or C <= 0:
         return 0    
 
-    if(memoizedResults[n][C] != -1):
-        return memoizedResults[n][C]
+    if(memoized_results[n][C] != -1):
+        return memoized_results[n][C]
 
 #    print("Weight of this item= {}".format(allWeights[n - 1]))
     
-    remainingWeight = C - allWeights[n-1]
+    remaining_weight = C - all_weights[n-1]
 #    print("Remaining weight = {}".format(remainingWeight))
 #    print("Making the take the recursive call")
 
-    if(remainingWeight < 0):
-        considerItem = 0
-        memoizedResults[n][C] = 0
+    if(remaining_weight < 0):
+        consider_item = 0
+        memoized_results[n][C] = 0
     else:
-        considerItem = allValues[n - 1] + knapsack(allValues, allWeights, memoizedResults, n-1, remainingWeight)
+        consider_item = all_values[n - 1] + knapsack(all_values, all_weights, memoized_results, n-1, remaining_weight)
 
 #    print("making the do not take recursive call")
-    doNotConsiderItem = knapsack(allValues, allWeights, memoizedResults, n-1, C)
+    do_not_consider_item = knapsack(all_values, all_weights, memoized_results, n-1, C)
     
-    memoizedResults[n][C] = max(considerItem, doNotConsiderItem)
+    memoized_results[n][C] = max(consider_item, do_not_consider_item)
 
     # The capacity of the bag is the same, we just take the next item.   
 #    print("Chose between {} and {}".format(considerItem, doNotConsiderItem))
 #    print("initialize {},{} to {}".format(n,C,memoizedResults[n][C]))
 
-    return memoizedResults[n][C]
+    return memoized_results[n][C]
 
 
 def get_memoizing_matrix(rows, columns):
@@ -132,13 +132,13 @@ def get_memoizing_matrix(rows, columns):
             list[list]: A 2-d matrix, represented as a list of lists that has the indicated rows and columns.
     """
 
-    Matrix = [[0 for column in range(columns)]for row in range(rows)]
-    for rowPosition in range(len(Matrix)):
-        for columnPosition in range(len(Matrix[rowPosition])):
-            Matrix[rowPosition][columnPosition] = 0 if rowPosition == 0 or columnPosition == 0 else -1
-    return Matrix
+    matrix = [[0 for column in range(columns)]for row in range(rows)]
+    for row_position in range(len(matrix)):
+        for column_position in range(len(matrix[row_position])):
+            matrix[row_position][column_position] = 0 if row_position == 0 or column_position == 0 else -1
+    return matrix
 
-def print_matrix(Matrix):
+def print_matrix(matrix):
     """Prints the matrix. Used for debugging.
 
         Args:
@@ -147,27 +147,27 @@ def print_matrix(Matrix):
     """
 
     print("\n\n")
-    for rowPosition in range(len(Matrix)):
-        toPrint = ""
-        for columnPosition in range(len(Matrix[rowPosition])):
-            toPrint = toPrint + "      " +  str(Matrix[rowPosition][columnPosition])
-        print(toPrint)
+    for row_position in range(len(matrix)):
+        to_print = ""
+        for column_position in range(len(matrix[row_position])):
+            to_print = to_print + "      " +  str(matrix[row_position][column_position])
+        print(to_print)
     print("\n\n")
 
 
 def main():
 
-#    values = [2,4,6,9]
-#    weights = [2,2,4,5]
-#    W = 8
+    values = [2,4,6,9]
+    weights = [2,2,4,5]
+    W = 8
 
-#    values = [1,4,5,7]
-#    weights = [1,3,4,5]
-#    W = 7
+    values = [1,4,5,7]
+    weights = [1,3,4,5]
+    W = 7
 
-    values = [10, 16, 8, 25]
-    weights = [4, 7, 8, 10]
-    W = 13
+#    values = [10, 16, 8, 25]
+#    weights = [4, 7, 8, 10]
+#    W = 13
 
 #    values = [1, 1, 1, 5]
 #    weights = [4, 7, 8, 10]
