@@ -54,11 +54,15 @@ def knapsack_top_down_dp(all_values, all_weights, W):
             int: The optimal value (cost) that we can have given the input knapsack of capacity W, and the input weights and their individual values.
             list: A list of indices, representing the optimal set of items that represent the optimal subset. 
     """
+
+    if len(all_weights) != len(all_values):
+        raise Exception('Invalid. The count of the weights and values do not match')
+
     total_item_count = len(all_values)
 
     # Total rows = # of items
     # Total columns = # possible weight.
-
+        
     print("Matrix dimensions:{} X {}".format(len(all_weights) + 1, W + 1))
     memoized_results = get_memoizing_matrix(len(all_weights) + 1, W + 1)
     optimal_cost = knapsack(all_values, all_weights, memoized_results, len(all_weights), W)
@@ -157,22 +161,51 @@ def print_matrix(matrix):
 
 def main():
 
-    values = [2,4,6,9]
-    weights = [2,2,4,5]
-    W = 8
+#    values = [2,4,6,9]
+#    weights = [2,2,4,5]
+#    W = 8
 
-    values = [1,4,5,7]
-    weights = [1,3,4,5]
-    W = 7
+#    values = [1,4,5,7]
+#    weights = [1,3,4,5]
+#    W = 7
 
-#    values = [10, 16, 8, 25]
-#    weights = [4, 7, 8, 10]
-#    W = 13
+    values = [10, 16, 8, 25]
+    weights = [4, 7, 8, 10]
+    W = 13
 
-#    values = [1, 1, 1, 5]
-#    weights = [4, 7, 8, 10]
-#    W = 13
+    values = [1, 1, 1, 5]
+    weights = [4, 7, 8, 10]
+    W = 13
+
+    weights = [23, 21, 29, 44, 53, 38, 63, 85, 89, 82]
+    values =  [92, 57, 49, 68, 60, 43, 67, 84, 87, 72]
+    W = 165
+
+    weights = [31,10,20,19,4,3,6]
+    values =  [70,20,39,37,7,5,10]
+    W = 50
+
+    weights = [25,35,45,5,25,3,2,2]
+    values =  [350,400,450,20,70,8,5,5]
+    W = 104
+
+    weights = [12,7,11,8,9]
+    values =  [24,13,23,15,16]
+    W = 26
+
     
+    weights = [56,59,80,64,75,17]
+    values =  [50,50,64,46,50,5]
+    W = 190
+
+    weights = [41,50,49,59,55,57,60]
+    values =  [442,525,511,593,546,564,617]
+    W = 170
+
+#    weights = [382745,799601,909247,729069,467902,44328,34610,698150,823460,903959,853665,551830,610856,670702,488960,951111,323046,446298,931161,31385,496951,264724,224916,169684]
+#    values =  [ 825594,1677009,1676628,1523970,943972,97426,69666,1296457,1679693,1902996,1844992,1049289,1252836,1319836,953277,2067538,675367,853655,1826027,65731,901489,577243,466257,369261]
+#    W = 6404180
+
 
     print("Here are the indices of the items that are selected")
     optimal_cost, indices = knapsack_top_down_dp(values, weights, W)
